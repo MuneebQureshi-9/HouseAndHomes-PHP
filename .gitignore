@@ -1,0 +1,19 @@
+# Environment files
+.env
+.env.local
+.env.production
+
+# Cache & temp
+tmp/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
