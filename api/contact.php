@@ -46,18 +46,62 @@ if ($subject !== '') {
     $mailSubject .= ' - ' . $subject;
 }
 
-$body = "Name: $name\nEmail: $email\n";
-if ($phone !== '') {
-    $body .= "Phone: $phone\n";
-}
 $subjectLine = $subject !== '' ? $subject : 'Website Contact';
 if ($propertyAddress !== '') {
     $subjectLine .= ' - Property Inquiry';
-    $body .= "Property Address: $propertyAddress\n";
 }
-$body .= "\nMessage:\n$message\n";
 
-$sent = send_site_mail($to, $subjectLine, $body, $email, $name);
+// Build professional HTML email
+$phoneRow = '';
+if ($phone !== '') {
+    $phoneRow = '<tr><td style="padding:12px 16px;font-weight:600;color:#1a1a2e;width:140px;border-bottom:1px solid #f0f0f0;">📞 Phone</td><td style="padding:12px 16px;color:#333;border-bottom:1px solid #f0f0f0;">' . htmlspecialchars($phone) . '</td></tr>';
+}
+$addressRow = '';
+if ($propertyAddress !== '') {
+    $addressRow = '<tr><td style="padding:12px 16px;font-weight:600;color:#1a1a2e;width:140px;border-bottom:1px solid #f0f0f0;">🏠 Property</td><td style="padding:12px 16px;color:#333;border-bottom:1px solid #f0f0f0;">' . htmlspecialchars($propertyAddress) . '</td></tr>';
+}
+
+$body = '
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,Helvetica,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:24px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+        <!-- Header -->
+        <tr><td style="background:linear-gradient(135deg,#1a1a2e,#16213e);padding:28px 32px;text-align:center;">
+          <h1 style="margin:0;color:#d4a843;font-size:22px;font-weight:700;">Houses &amp; Homes Toronto</h1>
+          <p style="margin:6px 0 0;color:rgba(255,255,255,0.7);font-size:13px;">New Website Inquiry</p>
+        </td></tr>
+        <!-- Subject Badge -->
+        <tr><td style="padding:20px 32px 0;">
+          <span style="display:inline-block;background:#d4a843;color:#1a1a2e;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;text-transform:uppercase;">' . htmlspecialchars($subjectLine) . '</span>
+        </td></tr>
+        <!-- Details Table -->
+        <tr><td style="padding:20px 32px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e8e8e8;border-radius:8px;overflow:hidden;">
+            <tr><td style="padding:12px 16px;font-weight:600;color:#1a1a2e;width:140px;border-bottom:1px solid #f0f0f0;">👤 Name</td><td style="padding:12px 16px;color:#333;border-bottom:1px solid #f0f0f0;">' . htmlspecialchars($name) . '</td></tr>
+            <tr><td style="padding:12px 16px;font-weight:600;color:#1a1a2e;width:140px;border-bottom:1px solid #f0f0f0;">✉️ Email</td><td style="padding:12px 16px;color:#333;border-bottom:1px solid #f0f0f0;"><a href="mailto:' . htmlspecialchars($email) . '" style="color:#2563eb;">' . htmlspecialchars($email) . '</a></td></tr>
+            ' . $phoneRow . $addressRow . '
+          </table>
+        </td></tr>
+        <!-- Message -->
+        <tr><td style="padding:0 32px 24px;">
+          <p style="margin:0 0 8px;font-weight:600;color:#1a1a2e;font-size:14px;">💬 Message</p>
+          <div style="background:#f8f9fa;border:1px solid #e8e8e8;border-radius:8px;padding:16px;color:#333;font-size:14px;line-height:1.6;">' . nl2br(htmlspecialchars($message)) . '</div>
+        </td></tr>
+        <!-- Footer -->
+        <tr><td style="background:#f8f9fa;padding:16px 32px;text-align:center;border-top:1px solid #e8e8e8;">
+          <p style="margin:0;color:#999;font-size:11px;">This message was sent from the Houses &amp; Homes Toronto website contact form.</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>';
+
+$sent = send_site_mail($to, $subjectLine, $body, $email, $name, true);
 
 if ($sent === true) {
     echo json_encode(['success' => true, 'message' => 'Message sent']);

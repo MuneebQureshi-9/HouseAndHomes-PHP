@@ -4,7 +4,7 @@ declare(strict_types=1);
 /**
  * send_site_mail - attempts to send mail via PHPMailer using Gmail SMTP.
  */
-function send_site_mail(string $to, string $subject, string $body, string $fromEmail = 'info@houseandhomesintoronto.com', string $fromName = 'House and Homes Toronto')
+function send_site_mail(string $to, string $subject, string $body, string $fromEmail = 'info@houseandhomesintoronto.com', string $fromName = 'House and Homes Toronto', bool $isHTML = false)
 {
     // Load PHPMailer manually
     require_once __DIR__ . '/PHPMailer/Exception.php';
@@ -20,6 +20,7 @@ function send_site_mail(string $to, string $subject, string $body, string $fromE
         $mail->Password = 'mnionmdlpfemubjo';
         $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS; // Port 465 uses SMTPS
         $mail->Port = 465;
+        $mail->CharSet = 'UTF-8';
 
         $mail->setFrom('houseandhomesintoronto@gmail.com', $fromName);
         $mail->addAddress($to);
@@ -27,15 +28,18 @@ function send_site_mail(string $to, string $subject, string $body, string $fromE
             $mail->addReplyTo($fromEmail, $fromName);
         }
         $mail->Subject = $subject;
+        $mail->isHTML($isHTML);
         $mail->Body = $body;
-        $mail->AltBody = strip_tags($body);
-        $mail->isHTML(false);
+        $mail->AltBody = strip_tags(str_replace(['<br>', '<br/>', '<br />'], "\n", $body));
         
         $mail->send();
         return true;
-    } catch (Exception $e) {
+    } catch (\PHPMailer\PHPMailer\Exception $e) {
         $error = $mail->ErrorInfo ?: $e->getMessage();
         error_log('PHPMailer send error: ' . $error);
         return $error;
+    } catch (\Exception $e) {
+        error_log('PHPMailer send error: ' . $e->getMessage());
+        return $e->getMessage();
     }
 }
