@@ -5,34 +5,39 @@ declare(strict_types=1);
 if (!function_exists('load_env_local')) {
     function load_env_local(): void
     {
-        $root = realpath(__DIR__ . '/../../');
-        if ($root === false)
-            return;
-        $envFile = $root . '/.env.local';
-        if (!file_exists($envFile))
-            return;
-        $lines = @file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        if (!is_array($lines))
-            return;
-        foreach ($lines as $line) {
-            $line = trim($line);
-            if ($line === '' || strpos($line, '#') === 0)
-                continue;
-            if (strpos($line, '=') === false)
-                continue;
-            [$k, $v] = explode('=', $line, 2) + [1 => ''];
-            $k = trim($k);
-            $v = trim($v);
-            if ($v === '')
-                continue;
-            // strip surrounding quotes
-            if ((strpos($v, '"') === 0 && strrpos($v, '"') === strlen($v) - 1) || (strpos($v, "'") === 0 && strrpos($v, "'") === strlen($v) - 1)) {
-                $v = substr($v, 1, -1);
-            }
-            if (getenv($k) === false) {
-                putenv("$k=$v");
-                $_ENV[$k] = $v;
-                $_SERVER[$k] = $v;
+        // Search multiple possible locations for .env.local / .env
+        $searchDirs = [
+            realpath(__DIR__ . '/../'),     // public_html (one level up from lib/)
+            realpath(__DIR__ . '/../../'),   // above public_html (project root)
+            $_SERVER['DOCUMENT_ROOT'] ?? '', // Apache document root
+        ];
+
+        foreach ($searchDirs as $dir) {
+            if ($dir === '' || $dir === false) continue;
+            foreach (['.env.local', '.env'] as $file) {
+                $path = $dir . '/' . $file;
+                if (file_exists($path)) {
+                    $lines = @file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                    if (!is_array($lines)) continue;
+                    foreach ($lines as $line) {
+                        $line = trim($line);
+                        if ($line === '' || strpos($line, '#') === 0) continue;
+                        if (strpos($line, '=') === false) continue;
+                        [$k, $v] = explode('=', $line, 2) + [1 => ''];
+                        $k = trim($k);
+                        $v = trim($v);
+                        if ($v === '') continue;
+                        if ((strpos($v, '"') === 0 && strrpos($v, '"') === strlen($v) - 1) || (strpos($v, "'") === 0 && strrpos($v, "'") === strlen($v) - 1)) {
+                            $v = substr($v, 1, -1);
+                        }
+                        if (getenv($k) === false) {
+                            putenv("$k=$v");
+                            $_ENV[$k] = $v;
+                            $_SERVER[$k] = $v;
+                        }
+                    }
+                    return; // Found and loaded, stop searching
+                }
             }
         }
     }
