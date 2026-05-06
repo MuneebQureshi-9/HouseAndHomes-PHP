@@ -472,7 +472,7 @@ function ddf_get_listings(array $filters = []): array
         $params['$filter'] = implode(' and ', $odata);
 
     try {
-        $data = ddf_fetch('/odata/v1/Property', $params, 10, 300);
+        $data = ddf_fetch('/odata/v1/Property', $params, 30, 300);
     } catch (\Exception $e) {
         error_log('DDF listings fetch error: ' . $e->getMessage());
         return ['Properties' => [], 'Pagination' => ['CurrentPage' => $page, 'TotalRecords' => 0, 'TotalPages' => 1, 'RecordsPerPage' => $limit]];
@@ -489,7 +489,7 @@ function ddf_get_property_by_id(string $id)
     if (!ddf_has_credentials())
         return null;
     try {
-        $data = ddf_fetch("/odata/v1/Property('" . rawurlencode($id) . "')", [], 10, 900);
+        $data = ddf_fetch("/odata/v1/Property('" . rawurlencode($id) . "')", [], 30, 900);
         return $data;
     } catch (\Exception $e) {
         return null;
@@ -501,7 +501,7 @@ function ddf_get_featured_listings(string $city, int $top = 3): array
     if (!ddf_has_credentials())
         return [];
     try {
-        $data = ddf_fetch('/odata/v1/Property', ['$filter' => "City eq '" . escape_odata_value($city) . "'", '$top' => $top, '$orderby' => 'ModificationTimestamp desc'], 10, 600);
+        $data = ddf_fetch('/odata/v1/Property', ['$filter' => "City eq '" . escape_odata_value($city) . "'", '$top' => $top, '$orderby' => 'ModificationTimestamp desc'], 30, 600);
         return $data['value'] ?? [];
     } catch (\Exception $e) {
         return [];

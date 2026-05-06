@@ -4,108 +4,51 @@ declare(strict_types=1);
 require_once __DIR__ . '/../includes/layout.php';
 require_once __DIR__ . '/../lib/ddf.php';
 
-$limit = isset($_GET['limit']) ? max(1, (int)$_GET['limit']) : 12;
-$page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-$filters = [
-    'city' => $_GET['city'] ?? null,
-    'neighbourhood' => $_GET['neighbourhood'] ?? null,
-    'minPrice' => isset($_GET['minPrice']) ? (int)$_GET['minPrice'] : null,
-    'maxPrice' => isset($_GET['maxPrice']) ? (int)$_GET['maxPrice'] : null,
-    'beds' => isset($_GET['beds']) ? (int)$_GET['beds'] : null,
-    'baths' => isset($_GET['baths']) ? (int)$_GET['baths'] : null,
-    'propertyType' => $_GET['propertyType'] ?? null,
-    'type' => $_GET['type'] ?? null,
-    'page' => $page,
-    'limit' => $limit,
-    'sortBy' => $_GET['sortBy'] ?? null,
-];
-
 render_header(
     'Exclusive Listings',
     'Discover Canada\'s finest properties for sale. From architectural masterpieces in the sky to timeless estates in prestigious enclaves.',
     '/listings/'
 );
-
-if (!function_exists('format_listing_type')) {
-    function format_listing_type(array $prop): string
-    {
-        if (($prop['CommonInterest'] ?? null) === 'Condo/Strata') {
-            return 'Condominium';
-        }
-        if (!empty($prop['StructureType']) && is_array($prop['StructureType']) && in_array('Row / Townhouse', $prop['StructureType'], true)) {
-            return 'Townhouse';
-        }
-        if (!empty($prop['PropertySubType'])) {
-            return strtoupper((string)$prop['PropertySubType']);
-        }
-        return 'Residential';
-    }
-}
-
-if (!function_exists('format_listing_status')) {
-    function format_listing_status(array $prop): string
-    {
-        $status = strtoupper(trim((string)($prop['StandardStatus'] ?? '')));
-        if ($status === 'ACTIVE') return 'New';
-        if ($status !== '') return $status;
-        return 'Listing';
-    }
-}
-
-if (!function_exists('format_listing_price')) {
-    function format_listing_price(array $prop): string
-    {
-        if (!empty($prop['ListPrice'])) {
-            return '$' . number_format((float)$prop['ListPrice']);
-        }
-        if (!empty($prop['LeaseAmount'])) {
-            return '$' . number_format((float)$prop['LeaseAmount']) . '/' . strtolower((string)($prop['LeaseAmountFrequency'] ?? 'mo'));
-        }
-        return 'Contact for price';
-    }
-}
-
-if (!function_exists('format_listing_address')) {
-    function format_listing_address(array $prop): string
-    {
-        $address = '';
-        if (!empty($prop['UnparsedAddress'])) {
-            $address = trim((string)$prop['UnparsedAddress']);
-        } else {
-            $parts = array_filter([
-                $prop['StreetNumber'] ?? '',
-                $prop['StreetName'] ?? '',
-                $prop['StreetSuffix'] ?? '',
-            ]);
-            $address = trim(implode(' ', $parts));
-        }
-
-        $locationParts = array_filter([
-            trim((string)($prop['City'] ?? '')),
-            trim((string)($prop['StateOrProvince'] ?? '')),
-            trim((string)($prop['PostalCode'] ?? '')),
-        ]);
-        
-        $locationStr = implode(', ', $locationParts);
-        
-        if ($locationStr !== '') {
-            $address .= $address !== '' ? ', ' . $locationStr : $locationStr;
-        }
-
-        return $address !== '' ? $address : 'Address unavailable';
-    }
-}
-
-try {
-    $data = ddf_get_listings($filters);
-    $properties = $data['Properties'] ?? [];
-    $pagination = $data['Pagination'] ?? null;
-} catch (Exception $e) {
-    $properties = [];
-    $pagination = null;
-    $fetchError = $e->getMessage();
-}
 ?>
+    <style>
+    /* Skeleton loading animation */
+    @keyframes shimmer {
+        0% { background-position: -400px 0; }
+        100% { background-position: 400px 0; }
+    }
+    .skeleton-card {
+        border-radius: 22px;
+        overflow: hidden;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.06);
+    }
+    .skeleton-image {
+        width: 100%; aspect-ratio: 16/10;
+        background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+        background-size: 800px 100%;
+        animation: shimmer 1.5s infinite ease-in-out;
+    }
+    .skeleton-body { padding: 1.1rem 1.2rem 1.3rem; }
+    .skeleton-line {
+        height: 14px; border-radius: 6px; margin-bottom: 0.65rem;
+        background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.06) 75%);
+        background-size: 800px 100%;
+        animation: shimmer 1.5s infinite ease-in-out;
+    }
+    .skeleton-line.w60 { width: 60%; }
+    .skeleton-line.w80 { width: 80%; }
+    .skeleton-line.w40 { width: 40%; height: 22px; }
+    .skeleton-line.w50 { width: 50%; }
+
+    .listings-grid { opacity: 1; transition: opacity 0.3s; }
+    .listings-grid.is-loading { opacity: 0.5; pointer-events: none; }
+    .listings-fade-in { animation: fadeInUp 0.35s ease both; }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    </style>
+
     <div class="listings-page-shell">
         <section class="listings-hero">
             <div class="listings-hero-overlay"></div>
@@ -132,7 +75,7 @@ try {
                     </div>
                 </div>
 
-                <form method="get" action="/listings/" class="listings-filter-card">
+                <form id="listingsFilterForm" method="get" action="/listings/" class="listings-filter-card">
                     <div class="listings-filter-grid">
                         <div class="listings-field">
                             <label for="type">Status</label>
@@ -236,84 +179,182 @@ try {
                     </div>
                 </form>
 
-                <div class="listings-count-row">
-                    Showing <strong><?php echo (int)count($properties); ?></strong> of <strong><?php echo (int)($pagination['TotalRecords'] ?? count($properties)); ?></strong> properties<?php echo !empty($filters['city']) ? ' in ' . htmlspecialchars((string)$filters['city'], ENT_QUOTES, 'UTF-8') : ''; ?>
+                <div class="listings-count-row" id="listingsCount">
+                    <span style="color:rgba(255,255,255,0.4)">Loading listings...</span>
                 </div>
 
-                <?php if (!empty($fetchError)): ?>
-                    <div class="listings-empty-state">Error loading listings: <?php echo htmlspecialchars($fetchError, ENT_QUOTES, 'UTF-8'); ?></div>
-                <?php elseif (empty($properties)): ?>
-                    <div class="listings-empty-state">No listings available for the selected filters.</div>
-                <?php else: ?>
-                    <div class="listings-grid">
-                        <?php foreach ($properties as $prop):
-                            $media = $prop['Media'][0]['MediaURL'] ?? null;
-                            $link = '/listings/view.php?id=' . urlencode($prop['ListingKey'] ?? $prop['ListingId'] ?? '');
-                            $beds = $prop['BedroomsTotal'] ?? null;
-                            $baths = $prop['BathroomsTotalInteger'] ?? null;
-                            $storeys = $prop['Stories'] ?? null;
-                            $photoCount = is_array($prop['Media'] ?? null) ? count($prop['Media']) : 0;
-                        ?>
-                            <article class="property-card listing-card">
-                                <a class="listing-card-link" href="<?php echo htmlspecialchars($link, ENT_QUOTES, 'UTF-8'); ?>" aria-label="View details for <?php echo htmlspecialchars(format_listing_address($prop), ENT_QUOTES, 'UTF-8'); ?>"></a>
-                                <div class="listing-image-wrap">
-                                    <?php if ($media): ?>
-                                        <img src="<?php echo htmlspecialchars($media, ENT_QUOTES, 'UTF-8'); ?>" alt="<?php echo htmlspecialchars(format_listing_address($prop), ENT_QUOTES, 'UTF-8'); ?>">
-                                    <?php else: ?>
-                                        <div class="listing-image-placeholder">No image</div>
-                                    <?php endif; ?>
-                                    <span class="listing-badge"><?php echo htmlspecialchars(format_listing_status($prop), ENT_QUOTES, 'UTF-8'); ?></span>
-                                    <button class="listing-save-btn" type="button" aria-label="Save property">♡</button>
-                                </div>
-                                <div class="listing-card-body">
-                                    <div class="listing-type"><?php echo htmlspecialchars(format_listing_type($prop), ENT_QUOTES, 'UTF-8'); ?></div>
-                                    <div class="listing-price"><?php echo htmlspecialchars(format_listing_price($prop), ENT_QUOTES, 'UTF-8'); ?></div>
-                                    <div class="listing-address" title="<?php echo htmlspecialchars(format_listing_address($prop), ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars(format_listing_address($prop), ENT_QUOTES, 'UTF-8'); ?></div>
-                                    <div class="listing-meta-row">
-                                        <?php if ($beds !== null && $beds !== ''): ?><span>🛏 <?php echo (int)$beds; ?> Beds</span><?php endif; ?>
-                                        <?php if ($baths !== null && $baths !== ''): ?><span>🛁 <?php echo (int)$baths; ?> Baths</span><?php endif; ?>
-                                        <?php if ($storeys !== null && $storeys !== ''): ?><span>🧱 <?php echo (int)$storeys; ?> Storeys</span><?php elseif (!empty($prop['BuildingAreaTotal'])): ?><span>◻ <?php echo htmlspecialchars((string)$prop['BuildingAreaTotal'] . ' ' . ($prop['BuildingAreaUnits'] ?? ''), ENT_QUOTES, 'UTF-8'); ?></span><?php endif; ?>
-                                    </div>
-                                    <div class="listing-attribution">Listed by <?php echo htmlspecialchars((string)($prop['OriginatingSystemName'] ?? 'MLS® System'), ENT_QUOTES, 'UTF-8'); ?><?php if ($photoCount > 0): ?> · <?php echo (int)$photoCount; ?> Photos<?php endif; ?></div>
-                                </div>
-                            </article>
-                        <?php endforeach; ?>
-                    </div>
-
-                    <?php if ($pagination && $pagination['TotalPages'] > 1): ?>
-                        <div class="listings-pagination">
-                            <?php if ((int)$pagination['CurrentPage'] > 1): ?>
-                                <a class="pagination-btn" href="?<?php echo htmlspecialchars(http_build_query(array_merge($_GET, ['page' => (int)$pagination['CurrentPage'] - 1])), ENT_QUOTES, 'UTF-8'); ?>" aria-label="Previous page">‹</a>
-                            <?php endif; ?>
-
-                            <?php
-                            $currentPage = (int)$pagination['CurrentPage'];
-                            $totalPages = (int)$pagination['TotalPages'];
-                            $start = max(1, $currentPage - 2);
-                            $end = min($totalPages, $start + 4);
-                            $start = max(1, $end - 4);
-                            if ($start > 1):
-                            ?>
-                                <a class="pagination-page" href="?<?php echo htmlspecialchars(http_build_query(array_merge($_GET, ['page' => 1])), ENT_QUOTES, 'UTF-8'); ?>">1</a>
-                                <?php if ($start > 2): ?><span class="pagination-ellipsis">...</span><?php endif; ?>
-                            <?php endif; ?>
-
-                            <?php for ($p = $start; $p <= $end; $p++): ?>
-                                <a class="pagination-page<?php echo $p === $currentPage ? ' is-active' : ''; ?>" href="?<?php echo htmlspecialchars(http_build_query(array_merge($_GET, ['page' => $p])), ENT_QUOTES, 'UTF-8'); ?>"><?php echo $p; ?></a>
-                            <?php endfor; ?>
-
-                            <?php if ($end < $totalPages): ?>
-                                <?php if ($end < $totalPages - 1): ?><span class="pagination-ellipsis">...</span><?php endif; ?>
-                                <a class="pagination-page" href="?<?php echo htmlspecialchars(http_build_query(array_merge($_GET, ['page' => $totalPages])), ENT_QUOTES, 'UTF-8'); ?>"><?php echo $totalPages; ?></a>
-                            <?php endif; ?>
-
-                            <?php if ((int)$pagination['CurrentPage'] < $totalPages): ?>
-                                <a class="pagination-btn" href="?<?php echo htmlspecialchars(http_build_query(array_merge($_GET, ['page' => (int)$pagination['CurrentPage'] + 1])), ENT_QUOTES, 'UTF-8'); ?>" aria-label="Next page">›</a>
-                            <?php endif; ?>
+                <div class="listings-grid" id="listingsGrid">
+                    <!-- Skeleton cards shown while loading -->
+                    <?php for ($i = 0; $i < 6; $i++): ?>
+                    <div class="skeleton-card">
+                        <div class="skeleton-image"></div>
+                        <div class="skeleton-body">
+                            <div class="skeleton-line w60"></div>
+                            <div class="skeleton-line w40"></div>
+                            <div class="skeleton-line w80"></div>
+                            <div class="skeleton-line w50"></div>
                         </div>
-                    <?php endif; ?>
-                <?php endif; ?>
+                    </div>
+                    <?php endfor; ?>
+                </div>
+
+                <div class="listings-pagination" id="listingsPagination"></div>
             </div>
         </section>
     </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var grid = document.getElementById('listingsGrid');
+    var countRow = document.getElementById('listingsCount');
+    var paginationEl = document.getElementById('listingsPagination');
+    var form = document.getElementById('listingsFilterForm');
+
+    function getFiltersFromURL() {
+        var params = new URLSearchParams(window.location.search);
+        return params;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        var div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    function renderCard(p, index) {
+        var imgHtml = p.image
+            ? '<img src="' + escapeHtml(p.image) + '" alt="' + escapeHtml(p.address) + '" loading="lazy">'
+            : '<div class="listing-image-placeholder">No image</div>';
+
+        var metaParts = [];
+        if (p.beds !== null && p.beds !== '') metaParts.push('<span>🛏 ' + parseInt(p.beds) + ' Beds</span>');
+        if (p.baths !== null && p.baths !== '') metaParts.push('<span>🛁 ' + parseInt(p.baths) + ' Baths</span>');
+        if (p.storeys !== null && p.storeys !== '') metaParts.push('<span>🧱 ' + parseInt(p.storeys) + ' Storeys</span>');
+        else if (p.area) metaParts.push('<span>◻ ' + escapeHtml(p.area) + '</span>');
+
+        var delay = Math.min(index * 0.05, 0.6);
+
+        return '<article class="property-card listing-card listings-fade-in" style="animation-delay:' + delay + 's">' +
+            '<a class="listing-card-link" href="/listings/view.php?id=' + encodeURIComponent(p.id) + '" aria-label="View ' + escapeHtml(p.address) + '"></a>' +
+            '<div class="listing-image-wrap">' + imgHtml +
+            '<span class="listing-badge">' + escapeHtml(p.status) + '</span>' +
+            '<button class="listing-save-btn" type="button" aria-label="Save property">♡</button></div>' +
+            '<div class="listing-card-body">' +
+            '<div class="listing-type">' + escapeHtml(p.type) + '</div>' +
+            '<div class="listing-price">' + escapeHtml(p.price) + '</div>' +
+            '<div class="listing-address" title="' + escapeHtml(p.address) + '">' + escapeHtml(p.address) + '</div>' +
+            '<div class="listing-meta-row">' + metaParts.join('') + '</div>' +
+            '<div class="listing-attribution">Listed by ' + escapeHtml(p.source) + (p.photos > 0 ? ' · ' + p.photos + ' Photos' : '') + '</div>' +
+            '</div></article>';
+    }
+
+    function renderPagination(pag, currentParams) {
+        if (!pag || pag.TotalPages <= 1) { paginationEl.innerHTML = ''; return; }
+
+        var curr = parseInt(pag.CurrentPage);
+        var total = parseInt(pag.TotalPages);
+        var html = '';
+
+        function pageUrl(p) {
+            var params = new URLSearchParams(currentParams);
+            params.set('page', p);
+            return '?' + params.toString();
+        }
+
+        if (curr > 1) html += '<a class="pagination-btn" href="' + pageUrl(curr - 1) + '" aria-label="Previous page">‹</a>';
+
+        var start = Math.max(1, curr - 2);
+        var end = Math.min(total, start + 4);
+        start = Math.max(1, end - 4);
+
+        if (start > 1) {
+            html += '<a class="pagination-page" href="' + pageUrl(1) + '">1</a>';
+            if (start > 2) html += '<span class="pagination-ellipsis">...</span>';
+        }
+
+        for (var p = start; p <= end; p++) {
+            html += '<a class="pagination-page' + (p === curr ? ' is-active' : '') + '" href="' + pageUrl(p) + '">' + p + '</a>';
+        }
+
+        if (end < total) {
+            if (end < total - 1) html += '<span class="pagination-ellipsis">...</span>';
+            html += '<a class="pagination-page" href="' + pageUrl(total) + '">' + total + '</a>';
+        }
+
+        if (curr < total) html += '<a class="pagination-btn" href="' + pageUrl(curr + 1) + '" aria-label="Next page">›</a>';
+
+        paginationEl.innerHTML = html;
+    }
+
+    function fetchListings() {
+        var params = getFiltersFromURL();
+        var apiUrl = '/api/listings.php?' + params.toString();
+
+        fetch(apiUrl)
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (!data.success || !data.properties || data.properties.length === 0) {
+                    var cityFilter = params.get('city');
+                    countRow.innerHTML = 'Showing <strong>0</strong> of <strong>0</strong> properties' + (cityFilter ? ' in ' + escapeHtml(cityFilter) : '');
+                    grid.innerHTML = '<div class="listings-empty-state">No listings available for the selected filters.</div>';
+                    paginationEl.innerHTML = '';
+                    return;
+                }
+
+                var props = data.properties;
+                var pag = data.pagination;
+                var cityFilter = params.get('city');
+
+                countRow.innerHTML = 'Showing <strong>' + props.length + '</strong> of <strong>' + (pag.TotalRecords || props.length) + '</strong> properties' + (cityFilter ? ' in ' + escapeHtml(cityFilter) : '');
+
+                var html = '';
+                for (var i = 0; i < props.length; i++) {
+                    html += renderCard(props[i], i);
+                }
+                grid.innerHTML = html;
+
+                renderPagination(pag, params);
+            })
+            .catch(function(err) {
+                console.error('Listings fetch error:', err);
+                countRow.innerHTML = 'Showing <strong>0</strong> of <strong>0</strong> properties';
+                grid.innerHTML = '<div class="listings-empty-state">Unable to load listings. Please try again.</div>';
+            });
+    }
+
+    // Intercept form submit to use AJAX instead of full page reload
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var formData = new FormData(form);
+            var params = new URLSearchParams();
+            formData.forEach(function(value, key) {
+                if (value !== '') params.set(key, value);
+            });
+            // Update URL without reload
+            var newUrl = '/listings/' + (params.toString() ? '?' + params.toString() : '');
+            window.history.pushState({}, '', newUrl);
+            // Show loading state
+            grid.classList.add('is-loading');
+            countRow.innerHTML = '<span style="color:rgba(255,255,255,0.4)">Searching...</span>';
+            fetchListings();
+            grid.classList.remove('is-loading');
+        });
+    }
+
+    // Handle back/forward navigation
+    window.addEventListener('popstate', function() {
+        grid.innerHTML = '';
+        for (var i = 0; i < 6; i++) {
+            grid.innerHTML += '<div class="skeleton-card"><div class="skeleton-image"></div><div class="skeleton-body"><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div><div class="skeleton-line w80"></div><div class="skeleton-line w50"></div></div></div>';
+        }
+        fetchListings();
+    });
+
+    // Initial load
+    fetchListings();
+});
+</script>
+
 <?php render_footer(); ?>
