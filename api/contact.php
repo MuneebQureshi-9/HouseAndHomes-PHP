@@ -3,12 +3,89 @@ declare(strict_types=1);
 
 header('Content-Type: application/json; charset=utf-8');
 
+// ---- Security: Only allow POST ----
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['success' => false, 'message' => 'Method not allowed']);
     exit;
 }
 
+// ---- Security: CSRF / Origin check ----
+$allowedOrigins = [
+    'https://houseandhomesintoronto.com',
+    'https://www.houseandhomesintoronto.com',
+    'http://localhost',
+    'http://127.0.0.1',
+];
+
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$referer = $_SERVER['HTTP_REFERER'] ?? '';
+$isAllowed = false;
+
+foreach ($allowedOrigins as $allowed) {
+    if ($origin !== '' && stripos($origin, $allowed) === 0) {
+        $isAllowed = true;
+        break;
+    }
+    if ($referer !== '' && stripos($referer, $allowed) === 0) {
+        $isAllowed = true;
+        break;
+    }
+}
+
+// Also allow if no origin/referer (same-origin form submissions)
+if ($origin === '' && $referer === '') {
+    $isAllowed = true;
+}
+
+if (!$isAllowed) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Forbidden: Invalid origin']);
+    exit;
+}
+
+// ---- Security: Basic Rate Limiting (IP-based, file-based) ----
+$rateDir = __DIR__ . '/../tmp/rate-limit';
+if (!is_dir($rateDir)) {
+    @mkdir($rateDir, 0755, true);
+}
+
+$clientIP = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+$rateFile = $rateDir . '/' . md5($clientIP) . '.json';
+$maxRequests = 5;       // max 5 submissions
+$windowSeconds = 3600;  // per hour
+
+if (file_exists($rateFile)) {
+    $rateData = @json_decode((string) @file_get_contents($rateFile), true);
+    if (is_array($rateData) && isset($rateData['count'], $rateData['window_start'])) {
+        if (time() - (int) $rateData['window_start'] < $windowSeconds) {
+            if ((int) $rateData['count'] >= $maxRequests) {
+                http_response_code(429);
+                echo json_encode(['success' => false, 'message' => 'Too many requests. Please try again later.']);
+                exit;
+            }
+            $rateData['count']++;
+        } else {
+            // Window expired, reset
+            $rateData = ['count' => 1, 'window_start' => time()];
+        }
+    } else {
+        $rateData = ['count' => 1, 'window_start' => time()];
+    }
+} else {
+    $rateData = ['count' => 1, 'window_start' => time()];
+}
+@file_put_contents($rateFile, json_encode($rateData));
+
+// ---- Security: Honeypot field (bots fill hidden fields) ----
+$honeypot = trim((string) ($_POST['website'] ?? ''));
+if ($honeypot !== '') {
+    // Bot detected — return success silently (don't reveal the trap)
+    echo json_encode(['success' => true, 'message' => 'Message sent']);
+    exit;
+}
+
+// ---- Parse input ----
 $contentType = isset($_SERVER['CONTENT_TYPE']) ? trim($_SERVER['CONTENT_TYPE']) : '';
 if (strpos($contentType, 'application/json') !== false) {
     $content = trim(file_get_contents('php://input'));
@@ -18,14 +95,15 @@ if (strpos($contentType, 'application/json') !== false) {
     }
 }
 
-$name = trim((string)($_POST['name'] ?? ''));
-$email = trim((string)($_POST['email'] ?? ''));
-$phone = trim((string)($_POST['phone'] ?? ''));
-$subject = trim((string)($_POST['subject'] ?? ''));
-$message = trim((string)($_POST['message'] ?? ''));
-$propertyAddress = trim((string)($_POST['propertyAddress'] ?? ''));
-$propertyAddress = trim((string)($_POST['address'] ?? $propertyAddress)); // fallback to address field
+$name = trim((string) ($_POST['name'] ?? ''));
+$email = trim((string) ($_POST['email'] ?? ''));
+$phone = trim((string) ($_POST['phone'] ?? ''));
+$subject = trim((string) ($_POST['subject'] ?? ''));
+$message = trim((string) ($_POST['message'] ?? ''));
+$propertyAddress = trim((string) ($_POST['propertyAddress'] ?? ''));
+$propertyAddress = trim((string) ($_POST['address'] ?? $propertyAddress)); // fallback to address field
 
+// ---- Validation ----
 if ($name === '' || $email === '' || $message === '') {
     http_response_code(422);
     echo json_encode(['success' => false, 'message' => 'Please provide name, email and message.']);
@@ -37,6 +115,14 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     echo json_encode(['success' => false, 'message' => 'Invalid email address.']);
     exit;
 }
+
+// ---- Security: Sanitize input lengths ----
+$name = mb_substr($name, 0, 200);
+$email = mb_substr($email, 0, 254);
+$phone = mb_substr($phone, 0, 30);
+$subject = mb_substr($subject, 0, 200);
+$message = mb_substr($message, 0, 5000);
+$propertyAddress = mb_substr($propertyAddress, 0, 500);
 
 require_once __DIR__ . '/../lib/mailer.php';
 
@@ -107,6 +193,7 @@ if ($sent === true) {
     echo json_encode(['success' => true, 'message' => 'Message sent']);
 } else {
     http_response_code(500);
-    // return the actual error string so the frontend displays why it failed
-    echo json_encode(['success' => false, 'message' => "Failed to send message: " . (is_string($sent) ? $sent : 'Unknown error')]);
+    // Don't expose internal error details to the client in production
+    error_log('Contact form mail error: ' . (is_string($sent) ? $sent : 'Unknown error'));
+    echo json_encode(['success' => false, 'message' => 'Failed to send message. Please try again or call us directly.']);
 }

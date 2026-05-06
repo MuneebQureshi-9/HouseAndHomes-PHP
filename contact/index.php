@@ -79,6 +79,10 @@ render_header(
                             <label for="message">Message *</label>
                             <textarea id="message" name="message" required placeholder="Tell us about your real estate goals, preferred neighborhoods, budget range, or any questions you have..."><?php echo htmlspecialchars($formData['message'], ENT_QUOTES, 'UTF-8'); ?></textarea>
                         </div>
+                        <!-- Honeypot anti-bot field - hidden from real users -->
+                        <div style="position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden;" aria-hidden="true">
+                            <input type="text" name="website" tabindex="-1" autocomplete="off">
+                        </div>
                         <div style="grid-column: 1 / -1;">
                             <button class="btn-primary" type="submit">Send Message</button>
                         </div>

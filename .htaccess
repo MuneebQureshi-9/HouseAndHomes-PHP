@@ -20,14 +20,40 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^(.+?)/?$ $1.php [L]
 
+# ====== SECURITY ======
+
 # Block access to sensitive files
-<FilesMatch "\.(env|log|gitignore)$">
+<FilesMatch "\.(env|log|gitignore|json|lock|md)$">
     Require all denied
 </FilesMatch>
 
-# Block access to lib directory (not meant for public)
+# Block access to hidden files (e.g., .git, .env.local)
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Block access to internal directories
 <IfModule mod_rewrite.c>
     RewriteRule ^lib/ - [F,L]
     RewriteRule ^includes/ - [F,L]
     RewriteRule ^tmp/ - [F,L]
+    RewriteRule ^\.git/ - [F,L]
+    RewriteRule ^\.env - [F,L]
 </IfModule>
+
+# Security headers
+<IfModule mod_headers.c>
+    # Prevent clickjacking
+    Header set X-Frame-Options "SAMEORIGIN"
+    # Prevent MIME type sniffing
+    Header set X-Content-Type-Options "nosniff"
+    # Enable XSS filter
+    Header set X-XSS-Protection "1; mode=block"
+    # Referrer policy
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    # Permissions policy
+    Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+# Disable directory listing
+Options -Indexes

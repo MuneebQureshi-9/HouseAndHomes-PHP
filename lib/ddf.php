@@ -6,19 +6,25 @@ if (!function_exists('load_env_local')) {
     function load_env_local(): void
     {
         $root = realpath(__DIR__ . '/../../');
-        if ($root === false) return;
+        if ($root === false)
+            return;
         $envFile = $root . '/.env.local';
-        if (!file_exists($envFile)) return;
+        if (!file_exists($envFile))
+            return;
         $lines = @file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        if (!is_array($lines)) return;
+        if (!is_array($lines))
+            return;
         foreach ($lines as $line) {
             $line = trim($line);
-            if ($line === '' || strpos($line, '#') === 0) continue;
-            if (strpos($line, '=') === false) continue;
+            if ($line === '' || strpos($line, '#') === 0)
+                continue;
+            if (strpos($line, '=') === false)
+                continue;
             [$k, $v] = explode('=', $line, 2) + [1 => ''];
             $k = trim($k);
             $v = trim($v);
-            if ($v === '') continue;
+            if ($v === '')
+                continue;
             // strip surrounding quotes
             if ((strpos($v, '"') === 0 && strrpos($v, '"') === strlen($v) - 1) || (strpos($v, "'") === 0 && strrpos($v, "'") === strlen($v) - 1)) {
                 $v = substr($v, 1, -1);
@@ -59,8 +65,10 @@ if (!function_exists('ddf_http_request')) {
                 '--silent',
                 '--show-error',
                 '--location',
-                '--max-time', (string)$timeout,
-                '--request', strtoupper($method),
+                '--max-time',
+                (string) $timeout,
+                '--request',
+                strtoupper($method),
             ];
             foreach ($headers as $header) {
                 $command[] = '--header';
@@ -84,9 +92,9 @@ if (!function_exists('ddf_http_request')) {
                 fclose($pipes[2]);
                 $exitCode = proc_close($process);
                 if ($exitCode === 0) {
-                    return ['code' => 200, 'body' => (string)$stdout];
+                    return ['code' => 200, 'body' => (string) $stdout];
                 }
-                $message = trim((string)$stderr) !== '' ? trim((string)$stderr) : trim((string)$stdout);
+                $message = trim((string) $stderr) !== '' ? trim((string) $stderr) : trim((string) $stdout);
                 return ['code' => $exitCode ?: 500, 'body' => $message];
             }
         }
@@ -100,19 +108,23 @@ if (!function_exists('ddf_http_request')) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
             $hdrs = [];
-            foreach ($headers as $h) $hdrs[] = $h;
-            if (!empty($hdrs)) curl_setopt($ch, CURLOPT_HTTPHEADER, $hdrs);
+            foreach ($headers as $h)
+                $hdrs[] = $h;
+            if (!empty($hdrs))
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $hdrs);
             $method = strtoupper($method);
             if ($method === 'POST') {
                 curl_setopt($ch, CURLOPT_POST, true);
-                if ($body !== null) curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+                if ($body !== null)
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
             } else {
                 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-                if ($body !== null) curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+                if ($body !== null)
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
             }
             $resp = curl_exec($ch);
             if ($resp !== false) {
-                $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 curl_close($ch);
                 return ['code' => $code, 'body' => $resp];
             }
@@ -123,14 +135,18 @@ if (!function_exists('ddf_http_request')) {
 
         // fallback to file_get_contents
         $opts = ['http' => ['method' => strtoupper($method), 'header' => implode("\r\n", $headers) . "\r\n", 'timeout' => $timeout, 'ignore_errors' => true]];
-        if ($body !== null) $opts['http']['content'] = $body;
+        if ($body !== null)
+            $opts['http']['content'] = $body;
         $context = stream_context_create($opts);
         $resp = @file_get_contents($url, false, $context);
         if ($resp !== false) {
             $code = 200;
             if (isset($http_response_header) && is_array($http_response_header)) {
                 foreach ($http_response_header as $h) {
-                    if (preg_match('#HTTP/\d+\.\d+\s+(\d{3})#', $h, $m)) { $code = (int)$m[1]; break; }
+                    if (preg_match('#HTTP/\d+\.\d+\s+(\d{3})#', $h, $m)) {
+                        $code = (int) $m[1];
+                        break;
+                    }
                 }
             }
             return ['code' => $code, 'body' => $resp];
@@ -144,7 +160,7 @@ if (!function_exists('ddf_http_request')) {
         }
         $scheme = $parsed['scheme'] ?? 'http';
         $host = $parsed['host'];
-        $port = isset($parsed['port']) ? (int)$parsed['port'] : ($scheme === 'https' ? 443 : 80);
+        $port = isset($parsed['port']) ? (int) $parsed['port'] : ($scheme === 'https' ? 443 : 80);
         $path = (isset($parsed['path']) ? $parsed['path'] : '/') . (isset($parsed['query']) ? '?' . $parsed['query'] : '');
         $remote = ($scheme === 'https' ? 'ssl://' : '') . $host . ':' . $port;
         $fp = @stream_socket_client($remote, $errno, $errstr, $timeout, STREAM_CLIENT_CONNECT);
@@ -155,7 +171,9 @@ if (!function_exists('ddf_http_request')) {
         $reqHeaders = [];
         $reqHeaders[] = strtoupper($method) . ' ' . $path . ' HTTP/1.1';
         $reqHeaders[] = 'Host: ' . $host;
-        foreach ($headers as $h) { $reqHeaders[] = $h; }
+        foreach ($headers as $h) {
+            $reqHeaders[] = $h;
+        }
         if ($body !== null) {
             $reqHeaders[] = 'Content-Length: ' . strlen($body);
         }
@@ -163,14 +181,18 @@ if (!function_exists('ddf_http_request')) {
         $raw = implode("\r\n", $reqHeaders) . "\r\n\r\n" . ($body ?? '');
         fwrite($fp, $raw);
         $response = '';
-        while (!feof($fp)) { $response .= fgets($fp, 8192); }
+        while (!feof($fp)) {
+            $response .= fgets($fp, 8192);
+        }
         fclose($fp);
         // split headers/body
         $parts = preg_split("/\r?\n\r?\n/", $response, 2);
         $headerText = $parts[0] ?? '';
         $bodyText = $parts[1] ?? '';
         $statusCode = 0;
-        if (preg_match('#HTTP/\d+\.\d+\s+(\d{3})#', $headerText, $m)) { $statusCode = (int)$m[1]; }
+        if (preg_match('#HTTP/\d+\.\d+\s+(\d{3})#', $headerText, $m)) {
+            $statusCode = (int) $m[1];
+        }
         return ['code' => $statusCode ?: 200, 'body' => $bodyText];
     }
 }
@@ -184,7 +206,7 @@ if (!function_exists('ddf_http_request')) {
 
 function ddf_has_credentials(): bool
 {
-    return (bool)(getenv('DDF_CLIENT_ID') && getenv('DDF_CLIENT_SECRET'));
+    return (bool) (getenv('DDF_CLIENT_ID') && getenv('DDF_CLIENT_SECRET'));
 }
 
 function ddf_token_cache_path(): string
@@ -211,7 +233,7 @@ function get_ddf_token(): string
         $contents = @file_get_contents($cacheFile);
         if ($contents !== false) {
             $json = @json_decode($contents, true);
-            if (isset($json['access_token'], $json['expires_at']) && time() < (int)$json['expires_at']) {
+            if (isset($json['access_token'], $json['expires_at']) && time() < (int) $json['expires_at']) {
                 return $json['access_token'];
             }
         }
@@ -249,7 +271,7 @@ function get_ddf_token(): string
         throw new \RuntimeException('DDF token response missing access_token: ' . substr($res['body'], 0, 1000));
     }
 
-    $expiresIn = isset($data['expires_in']) ? (int)$data['expires_in'] : 3600;
+    $expiresIn = isset($data['expires_in']) ? (int) $data['expires_in'] : 3600;
     $cacheSeconds = max(0, $expiresIn - 300);
     $expiresAt = time() + $cacheSeconds;
 
@@ -288,8 +310,8 @@ function ddf_fetch(string $path, array $params = [], int $timeout = 10, int $cac
     $cacheKey = ddf_build_url($path, $params);
     $cacheFile = $cacheSeconds > 0 ? ddf_cache_path($cacheKey) : null;
     if ($cacheFile && file_exists($cacheFile)) {
-        $cached = @json_decode((string)@file_get_contents($cacheFile), true);
-        if (is_array($cached) && isset($cached['expires_at'], $cached['data']) && time() < (int)$cached['expires_at']) {
+        $cached = @json_decode((string) @file_get_contents($cacheFile), true);
+        if (is_array($cached) && isset($cached['expires_at'], $cached['data']) && time() < (int) $cached['expires_at']) {
             return $cached['data'];
         }
     }
@@ -327,22 +349,36 @@ function escape_odata_value(string $value): string
 function normalize_location_query(string $value): array
 {
     $normalized = trim(strtolower($value));
-    if ($normalized === '') return [];
+    if ($normalized === '')
+        return [];
 
     $aliases = [
-        'on' => 'Ontario', 'ontario' => 'Ontario',
-        'bc' => 'British Columbia', 'british columbia' => 'British Columbia',
-        'ab' => 'Alberta', 'alberta' => 'Alberta',
-        'sk' => 'Saskatchewan', 'saskatchewan' => 'Saskatchewan',
-        'mb' => 'Manitoba', 'manitoba' => 'Manitoba',
-        'ns' => 'Nova Scotia', 'nova scotia' => 'Nova Scotia',
-        'nb' => 'New Brunswick', 'new brunswick' => 'New Brunswick',
-        'nl' => 'Newfoundland and Labrador', 'newfoundland and labrador' => 'Newfoundland and Labrador',
-        'pe' => 'Prince Edward Island', 'prince edward island' => 'Prince Edward Island',
-        'qc' => 'Quebec', 'quebec' => 'Quebec',
-        'yt' => 'Yukon', 'yukon' => 'Yukon',
-        'nt' => 'Northwest Territories', 'northwest territories' => 'Northwest Territories',
-        'nu' => 'Nunavut', 'nunavut' => 'Nunavut',
+        'on' => 'Ontario',
+        'ontario' => 'Ontario',
+        'bc' => 'British Columbia',
+        'british columbia' => 'British Columbia',
+        'ab' => 'Alberta',
+        'alberta' => 'Alberta',
+        'sk' => 'Saskatchewan',
+        'saskatchewan' => 'Saskatchewan',
+        'mb' => 'Manitoba',
+        'manitoba' => 'Manitoba',
+        'ns' => 'Nova Scotia',
+        'nova scotia' => 'Nova Scotia',
+        'nb' => 'New Brunswick',
+        'new brunswick' => 'New Brunswick',
+        'nl' => 'Newfoundland and Labrador',
+        'newfoundland and labrador' => 'Newfoundland and Labrador',
+        'pe' => 'Prince Edward Island',
+        'prince edward island' => 'Prince Edward Island',
+        'qc' => 'Quebec',
+        'quebec' => 'Quebec',
+        'yt' => 'Yukon',
+        'yukon' => 'Yukon',
+        'nt' => 'Northwest Territories',
+        'northwest territories' => 'Northwest Territories',
+        'nu' => 'Nunavut',
+        'nunavut' => 'Nunavut',
     ];
 
     if (isset($aliases[$normalized])) {
@@ -364,7 +400,7 @@ function ddf_get_listings(array $filters = []): array
 
     // Status / type filter (sale vs lease)
     if (!empty($filters['type']) && $filters['type'] !== 'all') {
-        $t = strtolower((string)$filters['type']);
+        $t = strtolower((string) $filters['type']);
         if ($t === 'sale') {
             $odata[] = "StandardStatus eq 'Active'";
             $odata[] = "ListPrice gt 0";
@@ -375,25 +411,37 @@ function ddf_get_listings(array $filters = []): array
     }
 
     if (!empty($filters['city']) && $filters['city'] !== 'all') {
-        $loc = normalize_location_query((string)$filters['city']);
-        if (!empty($loc['province'])) $odata[] = "StateOrProvince eq '" . escape_odata_value($loc['province']) . "'";
-        elseif (!empty($loc['city'])) $odata[] = "City eq '" . escape_odata_value($loc['city']) . "'";
+        $loc = normalize_location_query((string) $filters['city']);
+        if (!empty($loc['province']))
+            $odata[] = "StateOrProvince eq '" . escape_odata_value($loc['province']) . "'";
+        elseif (!empty($loc['city']))
+            $odata[] = "City eq '" . escape_odata_value($loc['city']) . "'";
     }
     if (!empty($filters['neighbourhood']) && $filters['neighbourhood'] !== 'all') {
         $odata[] = "SubdivisionName eq '" . escape_odata_value($filters['neighbourhood']) . "'";
     }
 
-    $priceField = $isLease ? 'LeaseAmount' : 'ListPrice';
-    if (!empty($filters['minPrice'])) $odata[] = "$priceField ge " . (int)$filters['minPrice'];
-    if (!empty($filters['maxPrice'])) $odata[] = "$priceField le " . (int)$filters['maxPrice'];
+    // Define $isLease BEFORE it's used in price filter logic
+    $isLease = (!empty($filters['type']) && strtolower((string) $filters['type']) === 'lease');
 
-    if (!empty($filters['beds'])) $odata[] = "BedroomsTotal ge " . (int)$filters['beds'];
-    if (!empty($filters['baths'])) $odata[] = "BathroomsTotalInteger ge " . (int)$filters['baths'];
+    $priceField = $isLease ? 'LeaseAmount' : 'ListPrice';
+    if (!empty($filters['minPrice']))
+        $odata[] = "$priceField ge " . (int) $filters['minPrice'];
+    if (!empty($filters['maxPrice']))
+        $odata[] = "$priceField le " . (int) $filters['maxPrice'];
+
+    if (!empty($filters['beds']))
+        $odata[] = "BedroomsTotal ge " . (int) $filters['beds'];
+    if (!empty($filters['baths']))
+        $odata[] = "BathroomsTotalInteger ge " . (int) $filters['baths'];
     if (!empty($filters['propertyType']) && $filters['propertyType'] !== 'all') {
         $pt = $filters['propertyType'];
-        if ($pt === 'Condominium') $odata[] = "CommonInterest eq 'Condo/Strata'";
-        elseif ($pt === 'Townhouse') $odata[] = "StructureType/any(s: s eq 'Row / Townhouse')";
-        else $odata[] = "PropertySubType eq '" . escape_odata_value((string)$pt) . "'";
+        if ($pt === 'Condominium')
+            $odata[] = "CommonInterest eq 'Condo/Strata'";
+        elseif ($pt === 'Townhouse')
+            $odata[] = "StructureType/any(s: s eq 'Row / Townhouse')";
+        else
+            $odata[] = "PropertySubType eq '" . escape_odata_value((string) $pt) . "'";
     }
 
     $limit = $filters['limit'] ?? 12;
@@ -401,7 +449,6 @@ function ddf_get_listings(array $filters = []): array
     $skip = ($page - 1) * $limit;
 
     $orderBy = 'ModificationTimestamp desc';
-    $isLease = (!empty($filters['type']) && strtolower((string)$filters['type']) === 'lease');
 
     if (!empty($filters['sortBy'])) {
         if ($filters['sortBy'] === 'price_asc') {
@@ -416,7 +463,8 @@ function ddf_get_listings(array $filters = []): array
     }
 
     $params = ['$top' => $limit, '$skip' => $skip, '$orderby' => $orderBy, '$count' => 'true'];
-    if (!empty($odata)) $params['$filter'] = implode(' and ', $odata);
+    if (!empty($odata))
+        $params['$filter'] = implode(' and ', $odata);
 
     try {
         $data = ddf_fetch('/odata/v1/Property', $params, 10, 300);
@@ -428,12 +476,13 @@ function ddf_get_listings(array $filters = []): array
     $properties = $data['value'] ?? [];
     $total = $data['@odata.count'] ?? count($properties);
 
-    return ['Properties' => $properties, 'Pagination' => ['CurrentPage' => $page, 'TotalRecords' => $total, 'TotalPages' => $total > 0 ? (int)ceil($total / $limit) : 1, 'RecordsPerPage' => $limit]];
+    return ['Properties' => $properties, 'Pagination' => ['CurrentPage' => $page, 'TotalRecords' => $total, 'TotalPages' => $total > 0 ? (int) ceil($total / $limit) : 1, 'RecordsPerPage' => $limit]];
 }
 
 function ddf_get_property_by_id(string $id)
 {
-    if (!ddf_has_credentials()) return null;
+    if (!ddf_has_credentials())
+        return null;
     try {
         $data = ddf_fetch("/odata/v1/Property('" . rawurlencode($id) . "')", [], 10, 900);
         return $data;
@@ -444,7 +493,8 @@ function ddf_get_property_by_id(string $id)
 
 function ddf_get_featured_listings(string $city, int $top = 3): array
 {
-    if (!ddf_has_credentials()) return [];
+    if (!ddf_has_credentials())
+        return [];
     try {
         $data = ddf_fetch('/odata/v1/Property', ['$filter' => "City eq '" . escape_odata_value($city) . "'", '$top' => $top, '$orderby' => 'ModificationTimestamp desc'], 10, 600);
         return $data['value'] ?? [];
@@ -455,9 +505,11 @@ function ddf_get_featured_listings(string $city, int $top = 3): array
 
 function ddf_get_open_houses(?string $propertyId = null): array
 {
-    if (!ddf_has_credentials()) return [];
+    if (!ddf_has_credentials())
+        return [];
     $params = [];
-    if ($propertyId) $params['$filter'] = "PropertyId eq '" . escape_odata_value($propertyId) . "'";
+    if ($propertyId)
+        $params['$filter'] = "PropertyId eq '" . escape_odata_value($propertyId) . "'";
     try {
         $data = ddf_fetch('/odata/v1/OpenHouse', $params, 10, 300);
         return $data['value'] ?? [];
@@ -468,8 +520,10 @@ function ddf_get_open_houses(?string $propertyId = null): array
 
 function ddf_get_by_neighbourhood(string $neighbourhood, string $city, string $excludeId, int $limit): array
 {
-    if (!ddf_has_credentials()) return [];
-    if ($neighbourhood === '' || $city === '') return [];
+    if (!ddf_has_credentials())
+        return [];
+    if ($neighbourhood === '' || $city === '')
+        return [];
 
     $filter = [
         "SubdivisionName eq '" . escape_odata_value($neighbourhood) . "'",
@@ -491,7 +545,8 @@ function ddf_get_by_neighbourhood(string $neighbourhood, string $city, string $e
 
 function ddf_get_agent_info()
 {
-    if (!ddf_has_credentials()) return null;
+    if (!ddf_has_credentials())
+        return null;
     try {
         $data = ddf_fetch('/odata/v1/Member', ['$top' => 1], 10, 3600);
         return $data['value'][0] ?? null;
@@ -502,10 +557,11 @@ function ddf_get_agent_info()
 
 function ddf_get_city_listing_count(string $city): int
 {
-    if (!ddf_has_credentials()) return 0;
+    if (!ddf_has_credentials())
+        return 0;
     try {
         $data = ddf_fetch('/odata/v1/Property/$count', ['$filter' => "City eq '" . escape_odata_value($city) . "'"], 10, 1800);
-        return (int)$data;
+        return (int) $data;
     } catch (\Exception $e) {
         return 0;
     }

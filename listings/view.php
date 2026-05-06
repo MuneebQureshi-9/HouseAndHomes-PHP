@@ -378,6 +378,10 @@ $galleryJson = json_encode(array_values(array_map(static function ($item) {
               <textarea name="message" required><?php echo htmlspecialchars('I am interested in ' . $displayAddress . ' (' . $listingId . '). Please contact me to arrange a viewing.', ENT_QUOTES, 'UTF-8'); ?></textarea>
             </div>
             <input type="hidden" name="propertyAddress" value="<?php echo htmlspecialchars($displayAddress . ' (' . $listingId . ')', ENT_QUOTES, 'UTF-8'); ?>">
+            <!-- Honeypot anti-bot field -->
+            <div style="position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden;" aria-hidden="true">
+                <input type="text" name="website" tabindex="-1" autocomplete="off">
+            </div>
             <button class="btn-primary" type="submit">Send Inquiry →</button>
             <div class="listing-attribution-block">We'll forward your inquiry directly to the listing team.</div>
           </form>
