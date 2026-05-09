@@ -1665,3 +1665,38 @@ img { max-width: 100%; display: block; }
 /* ===== LIGHT SECTION MUTED TEXT FIX ===== */
 .how-it-works-section .muted,
 .addon-services-section .muted { color: rgba(26,26,46,0.65); }
+
+/* ===== HERO DESKTOP HOTFIX =====
+   Keep image inside hero row on laptop/desktop screens.
+*/
+@media (min-width: 1024px) {
+  .home-hero .home-hero-inner {
+    grid-template-columns: minmax(0, 1fr) minmax(420px, 520px) !important;
+    align-items: center;
+    gap: clamp(1.5rem, 2.2vw, 2.75rem) !important;
+    text-align: left !important;
+  }
+
+  .home-hero .home-hero-copy {
+    margin: 0 !important;
+    max-width: 52rem;
+  }
+
+  .home-hero .home-hero-media {
+    display: flex !important;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 0 !important;
+    width: 100%;
+  }
+
+  .home-hero .home-hero-frame {
+    width: min(100%, 520px);
+    margin: 0 !important;
+    max-width: none;
+  }
+
+  .home-hero .home-hero-frame img {
+    max-height: min(62vh, 640px);
+  }
+}
