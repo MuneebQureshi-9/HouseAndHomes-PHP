@@ -12,7 +12,7 @@ $steps = [
     ['title' => 'Closing', 'icon' => '🔑', 'desc' => 'We negotiate fiercely on your behalf and handle all the paperwork.'],
 ];
 
-render_header('Buy a Home in Toronto', 'Find your perfect home in Toronto. Expert buyer representation, neighborhood guides, and off-market access with Muhammad Arshad Khan.', '/buyers/');
+render_header('Buy a Home in Toronto', 'Find your perfect home in Toronto. Expert buyer representation, neighborhood guides, and off-market access with Muhammad Arshad.', '/buyers/');
 ?>
 
 <!-- ====== HERO — Shared hero frame for consistent styling ====== -->

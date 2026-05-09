@@ -20,14 +20,14 @@ function render_header(string $pageTitle, string $pageDescription = '', string $
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{$title}</title>
     <meta name="description" content="{$description}">
-    <link rel="icon" href="/assets/images/logo/house-and-homes-logo.svg">
+    <link rel="icon" href="/assets/images/logo/logo.png">
     <link rel="stylesheet" href="/assets/css/site.css">
 </head>
 <body class="site-body">
     <header class="site-header" data-site-header>
         <div class="site-container header-inner">
             <a class="site-logo" href="/">
-                <img src="/assets/images/logo/light-logo.png" alt="Houses & Homes Logo">
+                <img src="/assets/images/logo/logo.png" alt="Houses & Homes Logo">
             </a>
 
             <nav class="desktop-nav" aria-label="Primary">
@@ -119,7 +119,7 @@ function render_footer(): void
         <div class="site-container footer-grid">
             <div>
                 <a class="footer-logo" href="/">
-                    <img src="/assets/images/logo/light-logo.png" alt="Houses & Homes Logo">
+                    <img src="/assets/images/logo/logo.png" alt="Houses & Homes Logo">
                 </a>
                 <p class="footer-copy">Canada's premier luxury real estate team. Serving the GTA with integrity, expertise, and an unmatched client experience.</p>
             </div>
@@ -159,7 +159,7 @@ HTML;
                 <a class="footer-phone" href="tel:4168261777">416-826-1777</a>
                 <div class="footer-meta">
                     <a href="mailto:info@houseandhomesintoronto.com">info@houseandhomesintoronto.com</a>
-                    <p>115 Matheson Ave Office, Toronto</p>
+                    <p>267 Matheson Blvd E Unit 3, Mississauga, ON L4Z 1X8, Canada</p>
                     <p>Mon-Fri 9am-7pm | Sat 10am-5pm</p>
                 </div>
             </div>
@@ -168,7 +168,7 @@ HTML;
         <div class="site-container footer-bottom">
             <div>
                 <p>&copy; {$year} Houses &amp; Homes Toronto. All Rights Reserved</p>
-                <p>Muhammad Arshad Khan — Licensed REALTOR® in Ontario</p>
+                <p>Muhammad Arshad — Licensed REALTOR® in Ontario</p>
             </div>
             <div class="footer-legal">
                 <a href="/privacy/">Privacy Policy</a>
@@ -188,10 +188,10 @@ HTML;
                     <svg viewBox="0 0 32 32" width="18" height="18" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M16 3C9.373 3 4 8.373 4 15c0 2.385.695 4.61 1.898 6.485L4 29l7.727-1.875A11.94 11.94 0 0016 28c6.627 0 12-5.373 12-12S22.627 3 16 3z"/></svg>
                 </div>
                 <div class="wa-panel-text">
-                    <strong>Chat with MAK on WhatsApp</strong>
+                    <strong>Chat with Muhammad Arshad on WhatsApp</strong>
                     <span>Quick answers about listings, showings and availability.</span>
                     <div class="wa-panel-actions">
-                        <a class="wa-start-btn" href="https://wa.me/14168261777?text=Hi%20MAK%2C%20I%20found%20you%20on%20Houses%20%26%20Homes%20Toronto%20and%20I%27d%20like%20to%20learn%20more." target="_blank" rel="noopener noreferrer">Start Chat</a>
+                        <a class="wa-start-btn" href="https://wa.me/14168261777?text=Hi%20Muhammad%20Arshad%2C%20I%20found%20you%20on%20Houses%20%26%20Homes%20Toronto%20and%20I%27d%20like%20to%20learn%20more." target="_blank" rel="noopener noreferrer">Start Chat</a>
                         <button class="wa-close-btn" type="button" aria-label="Close">✕</button>
                     </div>
                 </div>
@@ -205,7 +205,7 @@ HTML;
     <!-- Mobile CTA Bar -->
     <div class="mobile-cta-bar">
         <a class="mcta-icon mcta-phone" href="tel:4168261777" aria-label="Call Now">📞</a>
-        <a class="mcta-icon mcta-wa" href="https://wa.me/14168261777?text=Hi%20MAK%2C%20I%20found%20you%20on%20Houses%20%26%20Homes%20Toronto" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">💬</a>
+        <a class="mcta-icon mcta-wa" href="https://wa.me/14168261777?text=Hi%20Muhammad%20Arshad%2C%20I%20found%20you%20on%20Houses%20%26%20Homes%20Toronto" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">💬</a>
         <a class="mcta-main" href="/contact/">Get Free Valuation</a>
     </div>
 

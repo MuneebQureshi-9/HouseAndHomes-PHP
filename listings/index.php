@@ -4,6 +4,11 @@ declare(strict_types=1);
 require_once __DIR__ . '/../includes/layout.php';
 require_once __DIR__ . '/../lib/ddf.php';
 
+$cityProvinceOptions = [
+    'Provinces' => ['Alberta', 'British Columbia', 'Manitoba', 'New Brunswick', 'Newfoundland and Labrador', 'Nova Scotia', 'Ontario', 'Prince Edward Island', 'Quebec', 'Saskatchewan', 'Northwest Territories', 'Nunavut', 'Yukon'],
+    'Cities' => ['Abbotsford', 'Airdrie', 'Barrie', 'Brampton', 'Brandon', 'Burlington', 'Burnaby', 'Caledon', 'Calgary', 'Cambridge', 'Charlottetown', 'Chatham-Kent', 'Coquitlam', 'Delta', 'Drummondville', 'Edmonton', 'Fredericton', 'Gatineau', 'Guelph', 'Halifax', 'Hamilton', 'Iqaluit', 'Kamloops', 'Kanata', 'Kelowna', 'Kingston', 'Kitchener', 'Langley', 'Laval', 'Lethbridge', 'Longueuil', 'London', 'Markham', 'Medicine Hat', 'Milton', 'Mirabel', 'Mississauga', 'Moncton', 'Montreal', 'Nanaimo', 'New Westminster', 'Niagara Falls', 'North Bay', 'North Vancouver', 'Oakville', 'Oshawa', 'Ottawa', 'Peterborough', 'Pickering', 'Port Coquitlam', 'Prince George', 'Quebec City', 'Red Deer', 'Regina', 'Richmond', 'Richmond Hill', 'Saanich', 'Saskatoon', 'Sherbrooke', 'St. Catharines', 'St. John\'s', 'Surrey', 'Terrebonne', 'Thunder Bay', 'Toronto', 'Trois-Rivieres', 'Vancouver', 'Vaughan', 'Victoria', 'Waterloo', 'Welland', 'Whitehorse', 'Windsor', 'Winnipeg', 'Yellowknife'],
+];
+
 render_header(
     'Exclusive Listings',
     'Discover Canada\'s finest properties for sale. From architectural masterpieces in the sky to timeless estates in prestigious enclaves.',
@@ -88,7 +93,17 @@ render_header(
 
                         <div class="listings-field">
                             <label for="city">City / Province</label>
-                            <input id="city" name="city" type="text" placeholder="e.g. Toronto or Ontario" value="<?php echo htmlspecialchars((string)($_GET['city'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
+                            <select id="city" name="city">
+                                <option value="">All Cities / Provinces</option>
+                                <?php $selectedCity = (string)($_GET['city'] ?? ''); ?>
+                                <?php foreach ($cityProvinceOptions as $groupLabel => $groupOptions): ?>
+                                    <optgroup label="<?php echo htmlspecialchars($groupLabel, ENT_QUOTES, 'UTF-8'); ?>">
+                                        <?php foreach ($groupOptions as $option): ?>
+                                            <option value="<?php echo htmlspecialchars($option, ENT_QUOTES, 'UTF-8'); ?>" <?php echo $selectedCity === $option ? 'selected' : ''; ?>><?php echo htmlspecialchars($option, ENT_QUOTES, 'UTF-8'); ?></option>
+                                        <?php endforeach; ?>
+                                    </optgroup>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
 
                         <div class="listings-field">

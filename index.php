@@ -5,7 +5,7 @@ require_once __DIR__ . '/includes/layout.php';
 
 render_header(
     'Find Homes in Canada',
-    'Search Canada & GTA real estate with Muhammad Arshad Khan. Expert buyer, seller & rental services. 15+ years experience. Free consultation.',
+    'Search Canada & GTA real estate with Muhammad Arshad. Expert buyer, seller & rental services. 15+ years experience. Free consultation.',
     '/'
 );
 ?>
@@ -13,15 +13,31 @@ render_header(
 <!-- ====== HERO SECTION ====== -->
 <section class="home-hero">
     <div class="site-container home-hero-inner">
-        <div class="home-hero-label">Established 2009 — Canada's Premier Real Estate</div>
-        <h1>Elevating your<br><em>lifestyle</em><br>in Canada.</h1>
-        <p>Unparalleled expertise. Bespoke service. A legacy of excellence in Canada's luxury real estate market.</p>
-        <div class="home-hero-actions">
-            <a class="btn-primary" href="/contact/">Book Private Consultation →</a>
-            <a class="btn-outline-gold" href="/listings/">Explore Exclusive Listings</a>
+        <div class="home-hero-copy reveal-el">
+            <div class="home-hero-label">Established 2009 — Canada's Premier Real Estate</div>
+            <h1>Luxury real estate,<br><em>handled</em> with calm precision.</h1>
+            <p>Simple, sharp guidance for buyers, sellers, and investors across the GTA.</p>
+            <div class="home-hero-actions">
+                <a class="btn-primary" href="/contact/">Book Consultation →</a>
+                <a class="btn-outline-gold" href="/listings/">View Listings</a>
+            </div>
+            <div class="home-hero-mini-meta">
+                <span>Private service</span>
+                <span>GTA focus</span>
+                <span>Fast response</span>
+            </div>
+        </div>
+        <div class="home-hero-media reveal-el">
+            <div class="home-hero-frame">
+                <div class="home-hero-frame-accent"></div>
+                <img src="/assets/images/agent/Muhammad-Arshad.jpeg" alt="Muhammad Arshad — REALTOR® in Canada" loading="eager" fetchpriority="high">
+                <div class="home-hero-caption">
+                    <p class="hero-agent-name">Muhammad Arshad</p>
+                    <p class="hero-agent-role">Licensed REALTOR® in Ontario</p>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="home-hero-scroll">Scroll</div>
 </section>
 
 <!-- ====== TRUST STATS ====== -->
@@ -50,98 +66,6 @@ render_header(
                 <div class="stat-label">Client Satisfaction</div>
             </div>
         </div>
-    </div>
-</section>
-
-<!-- ====== AGENT INTRO ====== -->
-<section class="agent-intro-section">
-    <div class="site-container">
-        <div class="grid-split agent-grid">
-            <div class="agent-image-wrap reveal-el">
-                <div class="agent-gold-border"></div>
-                <div class="agent-gold-line-right"></div>
-                <div class="agent-image-inner">
-                    <img src="/assets/images/agent/Muhammad-Arshad.jpeg" alt="Muhammad Arshad Khan — REALTOR® in Canada">
-                    <div class="agent-image-caption">
-                        <p class="agent-name-overlay">Muhammad Arshad Khan</p>
-                        <p class="agent-title-overlay">REALTOR® · Licensed, Ontario</p>
-                    </div>
-                </div>
-            </div>
-            <div class="agent-content reveal-el">
-                <div class="section-label">Meet Your Agent</div>
-                <h2 class="dark-heading" style="font-size: clamp(2.25rem, 4.5vw, 3.25rem); margin: 0 0 0.5rem;">Muhammad Arshad Khan</h2>
-                <p class="agent-quote">"A Realtor by Choice, Not by Chance"</p>
-                <div class="agent-bio muted">
-                    <p>With over 15 years in Canada and the GTA, I've helped hundreds of families buy, sell, and rent properties across Ontario. My approach is simple: treat every client with fairness, honesty, and integrity — and ensure they always have the information to make the best decision.</p>
-                </div>
-                <div class="credential-badges">
-                    <div class="credential-badge"><span class="credential-label">Experience</span><span class="credential-value">15+ Years</span></div>
-                    <div class="credential-badge"><span class="credential-label">Specialization</span><span class="credential-value">GTA Expert</span></div>
-                    <div class="credential-badge"><span class="credential-label">Status</span><span class="credential-value">Licensed REALTOR®</span></div>
-                    <div class="credential-badge"><span class="credential-label">Portfolio</span><span class="credential-value">200+ Families</span></div>
-                </div>
-                <div class="agent-associations">
-                    <span>CREA Member</span>
-                    <span class="dot-sep"></span>
-                    <span>TRREB Member</span>
-                </div>
-                <a class="btn-outline-gold" href="/about/">Meet MAK →</a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ====== FEATURED LISTINGS ====== -->
-<section class="featured-listings-section">
-    <div class="site-container">
-        <div class="section-header-row">
-            <div>
-                <div class="section-label">Featured Properties</div>
-                <h2 class="dark-heading section-heading-lg">Curated Homes, Just For You</h2>
-                <p class="muted" style="max-width: 36rem; line-height: 1.8;">Explore our curated selection of Canada's finest luxury homes and exclusive off-market opportunities.</p>
-            </div>
-            <a class="section-link hide-mobile" href="/listings/">View All Listings →</a>
-        </div>
-        <?php
-        require_once __DIR__ . '/lib/ddf.php';
-        try { $featured = ddf_get_featured_listings('Toronto', 3); } catch (Exception $e) { $featured = []; }
-        if (!empty($featured)):
-        ?>
-        <div class="property-grid">
-            <?php foreach ($featured as $prop):
-                $media = $prop['Media'][0]['MediaURL'] ?? null;
-                $street = !empty($prop['UnparsedAddress']) ? trim((string)$prop['UnparsedAddress']) : trim(($prop['StreetNumber'] ?? '') . ' ' . ($prop['StreetName'] ?? ''));
-                $location = trim(implode(', ', array_filter([$prop['City'] ?? '', $prop['StateOrProvince'] ?? '', $prop['PostalCode'] ?? ''])));
-                $address = $street !== '' ? ($location !== '' ? $street . ', ' . $location : $street) : ($location !== '' ? $location : 'Address unavailable');
-                $price = isset($prop['ListPrice']) ? '$' . number_format($prop['ListPrice']) : 'Contact';
-                $beds = $prop['BedroomsTotal'] ?? null;
-                $baths = $prop['BathroomsTotalInteger'] ?? null;
-                $link = '/listings/view.php?id=' . urlencode($prop['ListingKey'] ?? $prop['ListingId'] ?? '');
-            ?>
-            <a class="property-card" href="<?php echo htmlspecialchars($link, ENT_QUOTES, 'UTF-8'); ?>">
-                <?php if ($media): ?>
-                <div class="card-img"><img src="<?php echo htmlspecialchars($media, ENT_QUOTES, 'UTF-8'); ?>" alt="Property" loading="lazy"></div>
-                <?php endif; ?>
-                <div class="card-body">
-                    <div class="card-price"><?php echo $price; ?></div>
-                    <div class="card-address"><?php echo htmlspecialchars($address, ENT_QUOTES, 'UTF-8'); ?></div>
-                    <div class="card-specs">
-                        <?php if ($beds !== null): ?><span class="card-spec"><?php echo $beds; ?> bd</span><?php endif; ?>
-                        <?php if ($baths !== null): ?><span class="card-spec"><?php echo $baths; ?> ba</span><?php endif; ?>
-                    </div>
-                </div>
-            </a>
-            <?php endforeach; ?>
-        </div>
-        <?php else: ?>
-        <div class="property-grid">
-            <div class="skeleton-card"></div>
-            <div class="skeleton-card"></div>
-            <div class="skeleton-card"></div>
-        </div>
-        <?php endif; ?>
-        <a class="section-link show-mobile" href="/listings/">View All Listings →</a>
     </div>
 </section>
 
@@ -222,9 +146,9 @@ render_header(
         <div class="testimonial-grid">
             <?php
             $reviews = [
-                ['text' => "MAK's understanding of the Canada market is unparalleled. He didn't just find us a condo; he secured an off-market penthouse that perfectly matched our demanding lifestyle.", 'author' => 'Sarah & James T.', 'area' => 'Yorkville', 'type' => 'Buyer', 'initials' => 'SJ'],
-                ['text' => 'Selling a legacy estate requires absolute discretion and a global network. The MAK team delivered on both fronts, setting a neighborhood record in just 14 days.', 'author' => 'Dr. Robert H.', 'area' => 'Bridle Path', 'type' => 'Seller', 'initials' => 'RH'],
-                ['text' => "We were navigating a complex relocation from London. MAK's white-glove concierge service made the transition seamless. We couldn't be happier with our Forest Hill home.", 'author' => 'Emma W.', 'area' => 'Forest Hill', 'type' => 'Buyer', 'initials' => 'EW'],
+                ['text' => "Muhammad Arshad's understanding of the Canada market is unparalleled. He didn't just find us a condo; he secured an off-market penthouse that perfectly matched our demanding lifestyle.", 'author' => 'Sarah & James T.', 'area' => 'Yorkville', 'type' => 'Buyer', 'initials' => 'SJ'],
+                ['text' => 'Selling a legacy estate requires absolute discretion and a global network. Muhammad Arshad and his team delivered on both fronts, setting a neighborhood record in just 14 days.', 'author' => 'Dr. Robert H.', 'area' => 'Bridle Path', 'type' => 'Seller', 'initials' => 'RH'],
+                ['text' => "We were navigating a complex relocation from London. Muhammad Arshad's white-glove concierge service made the transition seamless. We couldn't be happier with our Forest Hill home.", 'author' => 'Emma W.', 'area' => 'Forest Hill', 'type' => 'Buyer', 'initials' => 'EW'],
             ];
             foreach ($reviews as $review):
             ?>
@@ -265,7 +189,7 @@ render_header(
             <button type="submit" class="btn-primary valuation-btn">Get Valuation →</button>
         </form>
         <div id="valuationMsg" style="text-align:center; margin-top:1rem;"></div>
-        <div style="text-align:center; margin-top:1.5rem; color: rgba(201,161,74,0.7); font-size: 0.85rem;">🔒 100% Free · No Commitment · MAK Responds Within 48 Hours</div>
+        <div style="text-align:center; margin-top:1.5rem; color: rgba(201,161,74,0.7); font-size: 0.85rem;">🔒 100% Free · No Commitment · Muhammad Arshad Responds Within 48 Hours</div>
     </div>
 </section>
 

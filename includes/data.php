@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 $navLinks = [
+    ['label' => 'Home', 'href' => '/'],
     ['label' => 'Buy', 'href' => '/buyers/'],
     ['label' => 'Sell', 'href' => '/sellers/'],
     ['label' => 'Listings', 'href' => '/listings/'],
@@ -90,7 +91,7 @@ $faqSections = [
             'answer' => 'We serve the entire Greater Toronto Area, with specialized expertise in Toronto (Downtown, Midtown, Luxury enclaves), Mississauga, Oakville, Brampton, Vaughan, and Richmond Hill.',
         ],
         [
-            'question' => 'How long has Muhammad Arshad Khan been in real estate?',
+            'question' => 'How long has Muhammad Arshad been in real estate?',
             'answer' => 'Muhammad is a highly experienced, award-winning broker with a proven track record of facilitating over $1 Billion in real estate transactions throughout his career.',
         ],
     ],

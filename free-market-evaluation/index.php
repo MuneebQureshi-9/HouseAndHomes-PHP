@@ -112,7 +112,7 @@ render_header(
             <?php if ($status === 'success'): ?>
                 <div class="success-box">
                     <h2 class="light-heading">Request Received</h2>
-                    <p style="color: rgba(26,26,46,0.75); line-height:1.8;">Thank you for providing your property details. MAK will review the information and get back to you within 48 hours with a comprehensive valuation report.</p>
+                    <p style="color: rgba(26,26,46,0.75); line-height:1.8;">Thank you for providing your property details. Muhammad Arshad will review the information and get back to you within 48 hours with a comprehensive valuation report.</p>
                     <a class="btn-primary" href="/free-market-evaluation/">Submit Another Property</a>
                 </div>
             <?php else: ?>
@@ -174,20 +174,20 @@ render_header(
             <h3 class="dark-heading" style="color:white; margin-top:0;">The Process</h3>
             <ul class="service-list">
                 <li class="panel" style="background: rgba(255,255,255,0.03);"><div class="inline-icon-row"><span style="color: var(--gold);">1</span><div><strong class="dark-heading">Submit Details</strong><p class="muted">Provide basic information about your property.</p></div></div></li>
-                <li class="panel" style="background: rgba(255,255,255,0.03);"><div class="inline-icon-row"><span style="color: var(--gold);">2</span><div><strong class="dark-heading">Expert Review</strong><p class="muted">MAK analyzes recent sales and market trends.</p></div></div></li>
+                <li class="panel" style="background: rgba(255,255,255,0.03);"><div class="inline-icon-row"><span style="color: var(--gold);">2</span><div><strong class="dark-heading">Expert Review</strong><p class="muted">Muhammad Arshad analyzes recent sales and market trends.</p></div></div></li>
                 <li class="panel" style="background: rgba(255,255,255,0.03);"><div class="inline-icon-row"><span style="color: var(--gold);">3</span><div><strong class="dark-heading">Receive Report</strong><p class="muted">Get a comprehensive valuation report within 48 hours.</p></div></div></li>
             </ul>
 
             <div class="panel" style="margin-top: 1rem; background: rgba(255,255,255,0.03);">
                 <div class="inline-icon-row" style="margin-bottom: 1rem;">
-                    <span style="width:48px; height:48px; border-radius:999px; overflow:hidden; display:block; flex:0 0 auto;"><img src="/assets/images/agent/Muhammad-Arshad.jpeg" alt="MAK" style="width:100%; height:100%; object-fit:cover;"></span>
+                    <span style="width:48px; height:48px; border-radius:999px; overflow:hidden; display:block; flex:0 0 auto;"><img src="/assets/images/agent/Muhammad-Arshad.jpeg" alt="Muhammad Arshad" style="width:100%; height:100%; object-fit:cover;"></span>
                     <div>
                         <p style="margin:0; color:white; font-weight:700;">100% Free.</p>
                         <p class="muted" style="margin:0;">No Commitment. No Spam.</p>
                     </div>
                 </div>
                 <p class="muted" style="font-style: italic; line-height:1.8;">"I personally review every property evaluation to ensure the highest accuracy."</p>
-                <p style="margin:0.5rem 0 0; color:white; font-weight:700;">- Muhammad Arshad Khan</p>
+                <p style="margin:0.5rem 0 0; color:white; font-weight:700;">- Muhammad Arshad</p>
             </div>
         </aside>
     </div>
@@ -197,7 +197,7 @@ render_header(
     <div class="site-container">
         <div style="text-align:center; margin-bottom:2rem;">
             <div class="section-label" style="justify-content:center;">Why Choose Us</div>
-            <h2 class="light-heading" style="font-size: clamp(2rem, 4vw, 3.4rem);">Why Trust MAK's Valuation?</h2>
+            <h2 class="light-heading" style="font-size: clamp(2rem, 4vw, 3.4rem);">Why Trust Muhammad Arshad's Valuation?</h2>
         </div>
         <div class="value-grid">
             <div class="value-card panel light"><div class="light-heading" style="font-size:2rem; color:var(--gold);">01</div><h3 class="light-heading">Local Expertise</h3><p style="color: rgba(26,26,46,0.75);">Deep understanding of Toronto's micro-markets and neighborhood dynamics.</p></div>

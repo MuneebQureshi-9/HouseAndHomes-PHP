@@ -38,7 +38,7 @@ render_header(
             <div class="inline-icon-row" style="margin: 1.5rem 0 1rem;"><span style="color: var(--gold);">✉</span><h3 class="dark-heading">Email</h3></div>
             <a href="mailto:info@houseandhomesintoronto.com" style="color: rgba(255,255,255,0.72); word-break: break-all;">info@houseandhomesintoronto.com</a>
             <div class="inline-icon-row" style="margin: 1.5rem 0 1rem;"><span style="color: var(--gold);">📍</span><h3 class="dark-heading">Office</h3></div>
-            <p style="color: rgba(255,255,255,0.72); line-height: 1.7;">115 Matheson Ave Office<br><span style="color: rgba(255,255,255,0.45); font-size: 0.95rem;">Toronto, Ontario, Canada</span></p>
+            <p style="color: rgba(255,255,255,0.72); line-height: 1.7;">267 Matheson Blvd E Unit 3<br><span style="color: rgba(255,255,255,0.45); font-size: 0.95rem;">Mississauga, ON L4Z 1X8, Canada</span></p>
             <div class="inline-icon-row" style="margin: 1.5rem 0 1rem;"><span style="color: var(--gold);">🕒</span><h3 class="dark-heading">Hours</h3></div>
             <p style="color: rgba(255,255,255,0.72); line-height: 1.7;">Mon - Fri: 9am - 7pm<br><span style="color: rgba(255,255,255,0.45); font-size: 0.95rem;">Sat: 10am - 5pm | Sun: By Appointment</span></p>
         </div>
@@ -90,9 +90,9 @@ render_header(
             </div>
 
             <div class="panel" style="margin-top: 1.5rem; text-align:center; background: #111827; border-color: rgba(255,255,255,0.08); padding: 3rem 1.5rem;">
-                <a href="https://maps.google.com/?q=115+Matheson+Ave+Toronto" target="_blank" rel="noopener noreferrer" class="muted" style="display:inline-flex; flex-direction:column; gap:0.5rem; align-items:center;">
+                <a href="https://maps.google.com/?q=267+Matheson+Blvd+E+Unit+3+Mississauga+ON+L4Z+1X8+Canada" target="_blank" rel="noopener noreferrer" class="muted" style="display:inline-flex; flex-direction:column; gap:0.5rem; align-items:center;">
                     <span style="font-size: 1.5rem; color: var(--gold);">📍</span>
-                    <strong style="color: white; font-size: 1.1rem;">115 Matheson Ave Office, Toronto</strong>
+                    <strong style="color: white; font-size: 1.1rem;">267 Matheson Blvd E Unit 3, Mississauga, ON L4Z 1X8, Canada</strong>
                     <span style="font-size: 0.9rem; color: rgba(255,255,255,0.4);">Click to open in Google Maps</span>
                 </a>
             </div>

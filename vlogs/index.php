@@ -2,7 +2,7 @@
 declare(strict_types=1);
 require_once __DIR__ . '/../includes/layout.php';
 
-render_header('Vlogs', 'Watch real estate property tours, market updates, and expert tips from Muhammad Arshad Khan.', '/vlogs');
+render_header('Vlogs', 'Watch real estate property tours, market updates, and expert tips from Muhammad Arshad.', '/vlogs');
 
 $videos = [
     ['title' => 'Touring a $12.5M Bridle Path Estate', 'cat' => 'Property Tours', 'date' => 'Oct 15, 2024', 'dur' => '12:45', 'img' => 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80'],
@@ -16,7 +16,7 @@ $videos = [
 
 <section class="page-hero page-hero-center">
     <div class="site-container">
-        <div class="section-label" style="justify-content:center;">MAK Media</div>
+        <div class="section-label" style="justify-content:center;">Muhammad Arshad Media</div>
         <h1>Real Estate on Video</h1>
     </div>
 </section>
@@ -71,7 +71,7 @@ $videos = [
 <section style="background:var(--bg-secondary); padding:4rem 0; border-top:1px solid rgba(255,255,255,0.1);">
     <div class="site-container" style="text-align:center; max-width:40rem;">
         <h3 style="color:white; font-size:1.85rem; margin:0 0 1rem;">Never Miss an Update</h3>
-        <p class="muted" style="margin:0 0 2rem;">Subscribe to MAK's YouTube channel for weekly market updates, exclusive property tours, and expert real estate advice.</p>
+        <p class="muted" style="margin:0 0 2rem;">Subscribe to Muhammad Arshad's YouTube channel for weekly market updates, exclusive property tours, and expert real estate advice.</p>
         <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:0.75rem; background:#FF0000; color:white; padding:1rem 2rem; border-radius:8px; font-weight:700; font-size:1rem;">▶ Subscribe on YouTube</a>
     </div>
 </section>

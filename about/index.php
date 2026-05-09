@@ -11,8 +11,8 @@ $values = [
 ];
 
 render_header(
-    'About Muhammad Arshad Khan',
-    'Learn about Muhammad Arshad Khan, your trusted GTA REALTOR with over 15 years of experience in the Canada real estate market.',
+    'About Muhammad Arshad',
+    'Learn about Muhammad Arshad, your trusted GTA REALTOR with over 15 years of experience in the Canada real estate market.',
     '/about/'
 );
 ?>
@@ -117,7 +117,7 @@ render_header(
 
         <div class="about-story-image-wrap reveal-el">
             <div class="about-story-image">
-                <img src="/assets/images/agent/Muhammad-Arshad.jpeg" alt="Muhammad Arshad Khan">
+                <img src="/assets/images/agent/Muhammad-Arshad.jpeg" alt="Muhammad Arshad">
             </div>
         </div>
     </div>
@@ -182,9 +182,9 @@ render_header(
         <div class="testimonial-grid">
             <?php
             $reviews = [
-                ['text' => "MAK's understanding of the Canada market is unparalleled. He didn't just find us a condo; he secured an off-market penthouse that perfectly matched our demanding lifestyle.", 'author' => 'Sarah & James T.', 'area' => 'Yorkville', 'type' => 'Buyer', 'initials' => 'SJ'],
-                ['text' => 'Selling a legacy estate requires absolute discretion and a global network. The MAK team delivered on both fronts, setting a neighborhood record in just 14 days.', 'author' => 'Dr. Robert H.', 'area' => 'Bridle Path', 'type' => 'Seller', 'initials' => 'RH'],
-                ['text' => "We were navigating a complex relocation from London. MAK's white-glove concierge service made the transition seamless. We couldn't be happier with our Forest Hill home.", 'author' => 'Emma W.', 'area' => 'Forest Hill', 'type' => 'Buyer', 'initials' => 'EW'],
+                ['text' => "Muhammad Arshad's understanding of the Canada market is unparalleled. He didn't just find us a condo; he secured an off-market penthouse that perfectly matched our demanding lifestyle.", 'author' => 'Sarah & James T.', 'area' => 'Yorkville', 'type' => 'Buyer', 'initials' => 'SJ'],
+                ['text' => 'Selling a legacy estate requires absolute discretion and a global network. Muhammad Arshad and his team delivered on both fronts, setting a neighborhood record in just 14 days.', 'author' => 'Dr. Robert H.', 'area' => 'Bridle Path', 'type' => 'Seller', 'initials' => 'RH'],
+                ['text' => "We were navigating a complex relocation from London. Muhammad Arshad's white-glove concierge service made the transition seamless. We couldn't be happier with our Forest Hill home.", 'author' => 'Emma W.', 'area' => 'Forest Hill', 'type' => 'Buyer', 'initials' => 'EW'],
             ];
             foreach ($reviews as $review):
             ?>
@@ -225,7 +225,7 @@ render_header(
             <button type="submit" class="btn-primary valuation-btn">Get Valuation →</button>
         </form>
         <div id="valuationMsg" style="text-align:center; margin-top:1rem;"></div>
-        <div style="text-align:center; margin-top:1.5rem; color: rgba(201,161,74,0.7); font-size: 0.85rem;">🔒 100% Free · No Commitment · MAK Responds Within 48 Hours</div>
+        <div style="text-align:center; margin-top:1.5rem; color: rgba(201,161,74,0.7); font-size: 0.85rem;">🔒 100% Free · No Commitment · Muhammad Arshad Responds Within 48 Hours</div>
     </div>
 </section>
 

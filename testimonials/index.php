@@ -4,11 +4,11 @@ declare(strict_types=1);
 require_once __DIR__ . '/../includes/layout.php';
 
 $textTestimonials = [
-    ['quote' => 'Working with MAK was the best decision we made. He did not just list our home; he created a comprehensive marketing strategy that brought in multiple offers within the first week. His negotiation skills are unmatched, securing us a price far above what we initially expected.', 'client' => 'Sarah & David M.', 'transaction' => 'Sold in Oakville'],
+    ['quote' => 'Working with Muhammad Arshad was the best decision we made. He did not just list our home; he created a comprehensive marketing strategy that brought in multiple offers within the first week. His negotiation skills are unmatched, securing us a price far above what we initially expected.', 'client' => 'Sarah & David M.', 'transaction' => 'Sold in Oakville'],
     ['quote' => 'As first-time homebuyers in a very competitive Canada market, we were incredibly overwhelmed. Muhammad was patient, highly educational, and never pressured us. When we finally found the one, his strategic advice won us the bidding war. We could not be happier.', 'client' => 'James T.', 'transaction' => 'Bought in Downtown Toronto'],
-    ['quote' => 'I have worked with several agents over the years for my investment properties, but MAK operates on a completely different level. His data-driven approach and deep understanding of pre-construction ROI have been invaluable to my portfolio growth.', 'client' => 'Robert K.', 'transaction' => 'Investor, Pre-Construction'],
+    ['quote' => 'I have worked with several agents over the years for my investment properties, but Muhammad Arshad operates on a completely different level. His data-driven approach and deep understanding of pre-construction ROI have been invaluable to my portfolio growth.', 'client' => 'Robert K.', 'transaction' => 'Investor, Pre-Construction'],
     ['quote' => 'Selling a luxury estate requires a specific network and marketing finesse. Muhammad and his team delivered flawlessly. From the cinematic video tours to the international reach, they positioned our property perfectly to attract the right buyer.', 'client' => 'The Henderson Family', 'transaction' => 'Sold in The Bridle Path'],
-    ['quote' => 'Relocating from the US was stressful, but having MAK as our guide made the transition seamless. He understands the nuances of the various GTA neighborhoods and found us a spectacular home in Mississauga that completely fits our family lifestyle.', 'client' => 'Elena & Marcus V.', 'transaction' => 'Bought in Mississauga'],
+    ['quote' => 'Relocating from the US was stressful, but having Muhammad Arshad as our guide made the transition seamless. He understands the nuances of the various GTA neighborhoods and found us a spectacular home in Mississauga that completely fits our family lifestyle.', 'client' => 'Elena & Marcus V.', 'transaction' => 'Bought in Mississauga'],
     ['quote' => 'Integrity, transparency, and relentless work ethic. That is what you get with Muhammad. He told us exactly what we needed to do to prep our house for sale, brought in his staging team, and the results spoke for themselves. Highly recommended.', 'client' => 'Priya S.', 'transaction' => 'Sold in Brampton'],
 ];
 
@@ -21,7 +21,7 @@ $videos = [
 
 render_header(
     'Client Testimonials',
-    'Read success stories and watch video testimonials from clients who trusted Muhammad Arshad Khan with their GTA real estate transactions.',
+    'Read success stories and watch video testimonials from clients who trusted Muhammad Arshad with their GTA real estate transactions.',
     '/testimonials/'
 );
 ?>

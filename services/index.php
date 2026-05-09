@@ -14,7 +14,7 @@ $faqs = [
 
 render_header(
     'Real Estate Services',
-    'Expert real estate services in Canada and the GTA. Buying, selling, renting, and pre-construction investments with Muhammad Arshad Khan.',
+    'Expert real estate services in Canada and the GTA. Buying, selling, renting, and pre-construction investments with Muhammad Arshad.',
     '/services/'
 );
 ?>

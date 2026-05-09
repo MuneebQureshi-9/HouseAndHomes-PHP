@@ -14,7 +14,7 @@ $differentiators = [
 
 render_header(
     'Sell Your Home in Canada',
-    'Sell faster and for more money with Muhammad Arshad Khan. Expert pricing, staging, marketing, and negotiation strategies.',
+    'Sell faster and for more money with Muhammad Arshad. Expert pricing, staging, marketing, and negotiation strategies.',
     '/sellers/'
 );
 ?>
