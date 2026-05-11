@@ -95,7 +95,7 @@ render_header(
                             <label for="city">City / Province</label>
                             <select id="city" name="city">
                                 <option value="">All Cities / Provinces</option>
-                                <?php $selectedCity = (string)($_GET['city'] ?? ''); ?>
+                                <?php $selectedCity = isset($_GET['city']) ? (string)$_GET['city'] : 'Mississauga'; ?>
                                 <?php foreach ($cityProvinceOptions as $groupLabel => $groupOptions): ?>
                                     <optgroup label="<?php echo htmlspecialchars($groupLabel, ENT_QUOTES, 'UTF-8'); ?>">
                                         <?php foreach ($groupOptions as $option): ?>
@@ -227,6 +227,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function getFiltersFromURL() {
         var params = new URLSearchParams(window.location.search);
+        if (!params.has('city')) {
+            params.set('city', 'Mississauga');
+        }
         return params;
     }
 

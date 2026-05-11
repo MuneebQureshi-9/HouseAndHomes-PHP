@@ -21,7 +21,7 @@ function render_header(string $pageTitle, string $pageDescription = '', string $
     <title>{$title}</title>
     <meta name="description" content="{$description}">
     <link rel="icon" href="/assets/images/logo/logo.png">
-    <link rel="stylesheet" href="/assets/css/site.css">
+    <link rel="stylesheet" href="/assets/css/site.css?v=<?php echo filemtime(__DIR__ . '/../assets/css/site.css'); ?>">
 </head>
 <body class="site-body">
     <header class="site-header" data-site-header>

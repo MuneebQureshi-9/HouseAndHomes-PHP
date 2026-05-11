@@ -346,7 +346,10 @@ img { max-width: 100%; display: block; }
 }
 
 .home-hero::before {
-  /* Removed tree background to enforce premium dark gradients */
+  background-image: url('https://images.unsplash.com/photo-1511818966892-d7d671e672a2?q=80&w=2070&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.08);
 }
 
 .home-hero::after {
@@ -589,9 +592,9 @@ img { max-width: 100%; display: block; }
 
 .home-hero::before {
   background:
-    radial-gradient(circle at 20% 20%, rgba(201,161,74,0.22) 0%, transparent 35%),
-    radial-gradient(circle at 80% 30%, rgba(255,255,255,0.12) 0%, transparent 28%),
-    radial-gradient(circle at 50% 80%, rgba(11,31,58,0.34) 0%, transparent 24%);
+    radial-gradient(circle at 20% 20%, rgba(201,161,74,0.22), transparent 0 35%),
+    radial-gradient(circle at 80% 30%, rgba(255,255,255,0.12), transparent 0 28%),
+    radial-gradient(circle at 50% 80%, rgba(11,31,58,0.34), transparent 0 24%);
   filter: blur(20px);
   transform: scale(1.35);
 }
@@ -694,13 +697,13 @@ img { max-width: 100%; display: block; }
 
 .home-hero-frame img {
   width: 100%;
-  height: 100%;
+  height: auto;
   max-height: min(66vh, 700px);
-  object-fit: cover;
-  object-position: top center;
+  object-fit: contain;
+  object-position: center center;
   display: block;
   border-radius: 26px;
-  background: transparent;
+  background: #ffffff;
 }
 
 .home-hero-caption {
